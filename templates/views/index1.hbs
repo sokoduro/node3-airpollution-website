@@ -281,7 +281,7 @@ city = ["Obuasi", "Accra", "Takoradi", "Kumasi", "Tamale"];
 city.forEach((cities) => {
 // cname = city[2];
 cname = cities;
-fetch("http://localhost:3000/api?address=" + cname).then((response) => {
+fetch("/api?address=" + cname).then((response) => {
   response.json().then((data) => {
     if (data.error) {
       const derror = data.error;
