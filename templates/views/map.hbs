@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Map</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+      integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+      integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+      crossorigin=""
+    ></script>
+    <style>
+      #checkinMap {
+        height: 240px;
+        margin: 8px 0px;
+      }
+    </style>
+        
+    <link rel="icon" href="/img/weather.png">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <div class="main-content">
+        {{>header}}
+        <p>{{helpText}}</p>
+    </div>
+
+    <div id="checkinMap"></div>
+    {{>footer}}
+
+    <script>
+     const mymap = L.map("checkinMap").setView([6.6885, -1.6244], 8);
+     const attribution =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+//const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const tileUrl = "https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png";
+const tiles = L.tileLayer(tileUrl, { attribution });
+tiles.addTo(mymap);   
+let cname , txt;
+city = ["Obuasi", "Accra", "Takoradi", "Kumasi", "Tamale"];
+
+
+
+city.forEach((cities) => {
+// cname = city[2];
+cname = cities;
+fetch("http://localhost:3000/api?address=" + cname).then((response) => {
+  response.json().then((data) => {
+    if (data.error) {
+      const derror = data.error;
+      console.log(derror);
+    } else {
+      const dlocation = data.location;
+      const dforecast = data.forecast;
+      const dlatitude = data.latitude;
+      const dlongitude = data.longitude;
+      const marker = L.marker([dlatitude, dlongitude]).addTo(mymap);
+      txt = data.location + data.forecast;
+      marker.bindPopup(txt);
+
+
+
+      console.log(dlocation);
+      console.log(dforecast);
+    }
+  });
+});
+});
+
+    
+
+
+        
+  
+    </script>
+</body>
+
+</html>
+
+
+
+
